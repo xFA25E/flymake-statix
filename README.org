@@ -1,0 +1,63 @@
+#+TITLE: flymake-statix
+
+Statix backend for flymake
+
+This package provides a flymake backend that lets the user analyze nix code
+using [[https://github.com/nerdypepper/statix][statix]].
+
+[[scrot.png]]
+
+* Installation
+** Nix
+This repo is a nix flake.  You can just add ~overlays.default~ output to your
+nixpkgs overlays.
+
+#+begin_src nix
+{
+  inputs.flymake-statix.url = "github:xFA25E/flymake-statix";
+  outputs = { self, flymake-statix, nixpkgs }: let
+    pkgs = import nixpkgs {
+      system = "your-system";
+      overlays = [ flymake-statix.overlays.default ];
+    };
+  in {
+    # YOUR OUTPUTS
+  };
+}
+#+end_src
+
+** Package manager
+If you've installed it with your package manager, you're done.
+~flymake-statix-setup~ is autoloaded, so you can call it right away.
+
+** Manual
+Then put /flymake-statix.el/ in your load-path, and put the following in your
+init file:
+
+#+begin_src elisp
+(require 'flymake-statix)
+#+end_src
+
+* Usage
+Add ~flymake-statix-setup~ to ~nix-mode-hook~:
+
+#+begin_src elisp
+(add-hook 'nix-mode-hook #'flymake-statix-setup)
+#+end_src
+
+** Tips
++ You can customize ~flymake-statix-command~ to your liking.
++ If you enable ~flymake-statix-enable-fix~ option, then some warnings can be
+  fixed by calling ~flymake-statix-fix~.
+
+* Credits
+This package would not have been possible without the [[https://github.com/nerdypepper/statix][statix]] program.
+
+* Development
+- Optimise by making the backend asynchronous.
+- Further optimise by watching only the changed regions.  This can be achieved,
+  for example, using tree-sitter to get a region of a full syntactic unit in the
+  region.
+
+* License
+GPLv3
